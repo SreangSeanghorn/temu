@@ -1,0 +1,74 @@
+<html>
+
+<head>
+    <style>
+        .productStyle {
+            width: 280px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .fontSmall {
+            color: gray;
+            font-size: small;
+        }
+
+        .fontMedium {
+            color: gray;
+            font-size: medium;
+        }
+
+        .fontLarge {
+            font-size: large;
+        }
+
+        .priceInfoStyle {
+            display: flex;
+            margin-top: 10px;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script>
+    $(function () {
+        let id = $('#productContainer');
+        let html = "";
+        for (let i = 1; i <=15; i++) {
+            let img=''
+            if(i<=4){
+                img="/images/img"+i+".jpeg"
+            }else if(i<=10){
+                img="/images/img"+i+".jpg"
+            }else{
+                img="/images/img"+i+".jpeg"
+            }
+            let div = '<div><img src='+img+' class="productStyle"/>' +
+                '<div style="margin-top: 10px;">Men Hoodie Red Color</div>' +
+                '<div class="priceInfoStyle">' +
+                '<div style="display: flex; gap:5px;">' +
+                '<labe class="fontLarge""><b>$13.19</b></label>' +
+                '<label class="fontSmall"><strike>$29.9</strike></label>' +
+                '<label class="fontMedium">5.3k+ sold</label></div>' +
+                '<div style="border: 1px solid black;' +
+                'border-radius: 20px; padding: 3px; width: 30px; text-align: center;">' +
+                '<img src="/images/add-to-cart.png" width="20px" height="20px" /></div>' +
+                '</div>' +
+                '<div style="margin-top: 5px;">★★★★★(614)</div>' +
+                '</div>'
+              html=html+div;  
+        }
+        id.append(html);
+    });
+</script>
+
+<body>
+    <div>
+        <div id="productContainer"
+            style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            
+    </div>
+</body>
+
+</html>
