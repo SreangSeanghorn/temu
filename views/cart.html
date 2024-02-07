@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./cart.css">
+    <title>Temu | Shopping Cart</title>
+    <script>
+        $.get("/cart",
+            {
+                cart: window.localStorage.getItem("cart")
+            }
+        ).done(function () {
+            $.get('/getCartInfo', (data) => {
+                $('#content').html(data);
+            });
+            $.get('/footer', (data) => {
+                $('#footer').html(data);
+            });
+        });
+
+        window.onload = function () {
+            let headerInfo = ['All data is encrypted', 'Refund if item damaged', '30-day no delivery refund', '$5.00 Credit for delay', '15-day no update refund'];
+            let i = 1;
+            setInterval(() => {
+                $('#header-info').text(headerInfo[i]);
+                i++;
+                if (i === 4) {
+                    i = 0;
+                }
+            }, 3000);
+
+            $(".tab-title").click(function () {
+                let temp = $(this).next(".tab-content");
+                if ($(temp).css("display") == "grid") {
+                    updateShippingInfo()
+                    $(temp).css("display", "none");
+                    $(this).children("img").css("transform", "rotate(0deg)");
+                } else {
+                    $(temp).css("display", "grid");
+                    $(this).children("img").css("transform", "rotate(90deg)");
+                }
+            })
+
+            $(".checkout-btn").click(function () {
+                updateShippingInfo();
+                $("#content").html('<div style="font-size: 18px; text-align: center; color: #0A8800; padding: 100px 0 15px;">Order successfully. Your order will be delivered soon.</div>' +
+                    '<div style="text-align: center;"><button style="background-color: #FB7701; color: white; font-weight: 600; text-align: center; padding: 13px; font-size: 16px; cursor: pointer; border: none; border-radius: 20px;" onclick="backHome()">Return to Home page</button></div>');
+                $.ajax("/removeAllItems", { type: "DELETE" });
+                window.localStorage.removeItem("cart");
+            });
+        }
+
+        window.onbeforeunload = function () {
+            updateShippingInfo();
+        };
+
+        function backHome() {
+            window.location.href = "/";
+        }
+
+        function changeCart(fieldName, value, productId) {
+            $.ajax("/updateCart",
+                {
+                    type: "PUT",
+                    data: {
+                        product_id: productId,
+                        [fieldName]: value
+                    }
+                }
+            ).done(function (data) {
+                window.localStorage.setItem("cart", JSON.stringify(data.cart));
+                Object.getOwnPropertyNames(data.summary).forEach((figure) => {
+                    $('.' + figure).text(data.summary[figure]);
+                });
+            });
+        }
+
+        function removeItem(element, productId) {
+            $.ajax("/removeItem",
+                {
+                    type: "DELETE",
+                    data: {
+                        product_id: productId,
+                    }
+                }
+            ).done(function (data) {
+                if (parseInt(data.summary.numOfItems) === 0) {
+                    updateShippingInfo();
+                    $('#content').html('<div style="font-size: 16px; text-align: center; color: #777; padding: 200px 0;">There is no item in the cart.</div>');
+                }
+                $(element).parent().parent().parent().parent().remove();
+                window.localStorage.setItem("cart", JSON.stringify(data.cart));
+                Object.getOwnPropertyNames(data.summary).forEach((figure) => {
+                    $('.' + figure).text(data.summary[figure]);
+                });
+            });
+        }
+
+        function updateShippingInfo() {
+            // console.log($("[name='country']:selected").val());
+            $.ajax("/updateShippingInfo",
+                {
+                    type: "PUT",
+                    data: {
+                        country: $("[name='country']").find(":selected").val(),
+                        name: $("[name='name']").val(),
+                        address: $("[name='address']").val(),
+                        zipCode: $("[name='zipCode']").val(),
+                        phoneNumber: $("[name='phoneNumber']").val(),
+                        paymentMethod: $("[name='paymentMethod']:checked").val()
+                    }
+                }
+            );
+        }
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-container">
+            <a href="/"><img src="/temu-icon.png" alt="temu" width="70"></a>
+            <div id="header-info">All data is encrypted</div>
+        </div>
+    </div>
+    <div style="padding: 15px 40px 0; font-size: 14px;">
+        <span class="parent-page" onclick="backHome()">Home > </span>
+        <span>Cart</span>
+    </div>
+    <div id="content" style="padding-bottom: 40px;"></div>
+    <div id="footer"></div>
+</body>
+
+</html>

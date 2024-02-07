@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./cart.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <% if (parseInt(summary.numOfItems)> 0) { %>
+        <div class="cart">
+            <div>
+                <div class="sticky-section">
+                    <div
+                        style="background-color: rgba(10,136,0,.1); padding: 8px 0; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; padding-left: 10px;">
+                            <img src="/green-check.webp" alt="green-check" width="22px" height="22px" />
+                            <span style="padding-left: 10px; font-weight: 500; font-size: 16px;">
+                                Free shipping on all orders</span>
+                        </div>
+                        <div style="padding-right: 10px; font-size: 14px;">Exclusive offer</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="tab-title">
+                        <img src="arrow.png" alt="arrow" width="12" />
+                        <span>Shipping Address</span>
+                    </div>
+                    <div class="shipping-section tab-content">
+                        <label for="country">Country / Region:</label>
+                        <select name="country">
+                            <% for (let country of countryData) { %>
+                                <% if (country.value === shippingInfo.country) { %>
+                                    <option value="<%= country.value %>" selected><%= country.name %></option>
+                                    <% } else { %>
+                                        <option value="<%= country.value %>"><%= country.name %></option>
+                                        <% } %>
+                                <% } %>
+                        </select>
+                        <label for="name">Full name:</label>
+                        <input type="text" name="name" value="<%= shippingInfo.name %>" />
+                        <label for="Address">Address:</label>
+                        <input type="text" name="address" value="<%= shippingInfo.address %>" />
+                        <label for="zipCode">Zip Code:</label>
+                        <input type="text" name="zipCode" value="<%= shippingInfo.zipCode %>" />
+                        <label for="phone">Phone Number:</label>
+                        <input type="text" name="phoneNumber" value="<%= shippingInfo.phoneNumber %>" />
+                    </div>
+                    <div class="line"></div>
+                </div>
+                <div>
+                    <div class="tab-title">
+                        <img src="arrow.png" alt="arrow" width="12" />
+                        <span>Payment Methods</span>
+                    </div>
+                    <div class="payment-section tab-content">
+                        <% for (let payment of paymentMethodData) { %>
+                            <% if (payment.value === shippingInfo.paymentMethod) { %>
+                                <div>
+                                    <input type="radio" name="paymentMethod" value="<%= payment.value %>" checked />
+                                    <img src="/<%= payment.value %>.webp" alt="<%= payment.value %>" width="49" height="33" /><%= payment.name %>
+                                </div>
+                                <% } else { %>
+                                    <div>
+                                        <input type="radio" name="paymentMethod" value="<%= payment.value %>" />
+                                        <img src="/<%= payment.value %>.webp" alt="<%= payment.value %>" width="49" height="33" /><%= payment.name %>
+                                    </div>
+                                    <% } %>
+                            <% } %>
+                    </div>
+                    <div class="line"></div>
+                </div>
+                <div>
+                    <div class="tab-title">
+                        <img src="arrow.png" alt="arrow" width="12" />
+                        <span>Item details (<span class="numOfItems dynamic-figure"><%= summary.numOfItems %></span>)</span>
+                    </div>
+                    <div class="tab-content">
+                        <% for (let item of cart) { %>
+                            <div class="item">
+                                <img src="<%= item.image %>" width="135" height="135"
+                                    style="object-fit: cover; margin-right: 10px; max-height: 100%;" />
+                                <div style="width: 100%;">
+                                    <div class="item-section">
+                                        <div class="item-name">
+                                            <a href="/productDescription/<%= item.product_id %>">
+                                                <%= item.name %>
+                                            </a>
+                                        </div>
+                                        <div><img src="/delete.png" alt="delete" width="15" class="delete-icon"
+                                                onclick="removeItem(this, <%= item.product_id %>)" />
+                                        </div>
+                                    </div>
+                                    <div class="provider-section">By&nbsp;
+                                        <span class="provider-name">
+                                            <%= item.supplier_name %>
+                                        </span>
+                                    </div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <select name="size"
+                                                style="border: 1px solid #ddd; height: 30px; padding: 5px 8px; border-radius: 15px;"
+                                                onchange="changeCart('size', this.value, <%= item.product_id %>)">
+                                                <% let sizeData=['XS', 'S' , 'M' , 'L' ]; %>
+                                                    <% for (let size of sizeData) { %>
+                                                        <% if (size===item.size) { %>
+                                                            <option value="<%= size %>" selected>
+                                                                <%= size %>
+                                                            </option>
+                                                            <% } else { %>
+                                                                <option value="<%= size %>">
+                                                                    <%= size %>
+                                                                </option>
+                                                                <% } %>
+                                                                    <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="item-price">
+                                            $<%= item.dis_price %>
+                                        </div>
+                                    </div>
+                                    <div class="discount">
+                                        <span
+                                            style="font-size: 13px; color: #FB7701; border: 1px solid #FB7701; border-radius: 5px; padding: 1px 5px; font-weight: 600; margin-right: 5px;">
+                                            -<%= (100 - (item.dis_price / item.price * 100)).toFixed(0) %>%
+                                        </span>
+                                        <span style="font-size: 12px; color: #aaa; text-decoration: line-through;">$
+                                            <%= item.price %>
+                                        </span>
+                                    </div>
+                                    <div class="quantity-section">
+                                        Qty <select name="quantity" style="border: 1px solid #ddd;"
+                                            onchange="changeCart('qty_selected', this.value, <%= item.product_id %>)">
+                                            <% for (let i=1; i <=item.qty_product; i++) { %>
+                                                <% if (i===parseInt(item.qty_selected)) { %>
+                                                    <option value="<%= i %>" selected>
+                                                        <%= i %>
+                                                    </option>
+                                                    <% } else { %>
+                                                        <option value="<%= i %>">
+                                                            <%= i %>
+                                                        </option>
+                                                        <% } %>
+                                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="sticky-section">
+                    <div class="summary">
+                        <div class="summary-title">Order Summary</div>
+                        <div class="summary-detail">
+                            <div class="summary-detail-item">Item(s) total:</div>
+                            <div style="color: #777; text-decoration: line-through; text-align: right;">
+                                $<span class="totalPrice dynamic-figure"><%= summary.totalPrice %></span>
+                            </div>
+                            <div class="summary-detail-item">Item(s) discount:</div>
+                            <div style="color: #FB7701; text-align: right;">
+                                -$<span class="discountPart dynamic-figure"><%= summary.discountPart %></span>
+                            </div>
+                            <div class="summary-detail-item">Sub Total:</div>
+                            <div style="color: #222; text-align: right;">
+                                $<span class="discountPrice dynamic-figure"><%= summary.discountPrice %></span>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="summary-detail">
+                            <div class="summary-detail-item">Shipping:</div>
+                            <div style="color: #0A8800; text-align: right; font-weight: 600;">
+                                FREE
+                            </div>
+                            <div style="font-size: 13px; color: #777;">Delivery: Feb 20-25</div>
+                            <div></div>
+                            <div class="summary-detail-item">Sales tax:</div>
+                            <div style="color: #222; text-align: right;">
+                                $<span class="taxPrice dynamic-figure"><%= summary.taxPrice %></span>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="summary-detail summary-total">
+                            <div class="summary-detail-item">
+                                Order total (<span class="numOfItems dynamic-figure"><%= summary.numOfItems %></span>)
+                            </div>
+                            <div style="color: #222; text-align: right;">
+                                $<span class="orderTotal dynamic-figure"><%= summary.orderTotal %></span>
+                            </div>
+                        </div>
+                        <div style="text-align: center;"><button class="checkout-btn">Submit Order</button>
+                        </div>
+                        <div style="padding-top: 15px;">
+                            <div class="extra-info-title">Temu's tree planting commitment</div>
+                            <div class="extra-info-content">Temu has planted trees all around the world and has
+                                been
+                                awarded a Trees for the Future certification</div>
+                            <div class="extra-info-title">Temu protects your card information</div>
+                            <div class="extra-info-content">
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>Temu follows the Payment Card Industry Data Security Standard (PCI
+                                        DSS)
+                                        when
+                                        handling card data
+                                    </span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>Card information is secure and uncompromised</span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>All data is encrypted</span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>Temu never sells your card information</span>
+                                </div>
+                            </div>
+                            <div class="extra-info-title">Secure privacy</div>
+                            <div class="extra-info-content">
+                                Protecting your privacy is important to us! Please be assured that your
+                                information
+                                will
+                                be kept secured and uncompromised. We do not sell your personal information for
+                                money
+                                and will only use your information in accordance with our privacy and cookie
+                                policy
+                                to
+                                provide and improve our services to you.
+                            </div>
+                            <div class="extra-info-title">Delivery guarantee</div>
+                            <div class="extra-info-content">
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>$5.00 Credit for delay</span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>Refund if item damaged
+                                    </span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>15-day no update refund
+                                    </span>
+                                </div>
+                                <div>
+                                    <img src="/green-check.webp" alt="green-check" width="14" height="14"
+                                        style="padding-right: 5px;" />
+                                    <span>30-day no delivery refund</span>
+                                </div>
+                            </div>
+                            <div class="extra-info-title">Temu purchase protection</div>
+                            <div class="extra-info-content">Shop confidently on Temu knowing that if something
+                                goes
+                                wrong, we've always got your back.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } else { %>
+            <div style="font-size: 16px; text-align: center; color: #777; padding: 200px 0;">There is no item in the
+                cart.</div>
+            <% } %>
+</body>
+
+</html>
