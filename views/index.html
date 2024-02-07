@@ -3,145 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<header>
-  
-</header>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <title>Temu</title>
     <script>
         $(document).ready(function () {
             $.get('/header', (data) => {
                 $('#header').html(data);
             });
+            $.get('/footer', (data) => {
+                $('#footer').html(data);
+            });
+          
             $.get('/homePage', (data) => {
                 $('#home-page').html(data);
             });
-            // $.get('/footer', (data) => {
-            //     $('#footer').html(data);
-            // });
-            $.ajax
         });
     </script>
     
 </head>
 
 <body>
-   
+    <!-- <iframe class="iframe" src="header.html"  ></iframe>  -->
     <div id="header"></div>
     <div id="home-page"></div>
-    <div class="footer">
-        <div class="footer-info">
-            <div>
-                <h4>Company info</h4>
-                <span>About Temu</span>
-                <span>Temu - Team Up, Price Down!</span>
-                <span>Affiliate & influencer Program</span>
-                <span>Campus ambassador</span>
-                <span>Contact us</span>
-                <span>Careers</span>
-                <span>Press</span>
-            </div>
-            <div>
-                <h4>Company info</h4>
-                <span>Return and refund policy</span>
-                <span>Intellectual property policy</span>
-                <span>Shipping info</span>
-                <span>Student discount</span>
-                <span>Your Recalls and Product Safety </span>
-                <span>Alerts</span>
-            </div>
-            <div>
-                <h4>Help</h4>
-                <span>Support center & FAQ</span>
-                <span>Temu purchase </span>
-                <span>Sitemap</span>
-                <span>How to order</span>
-                <span>How to track</span>
-                <span>Partner with Temu</span>
-            </div>
-            <div class="footer-info-download">
-                <h4>Download the Temu App</h4>
-                <span>Price-drop alerts</span>
-                <span>Track orders any time</span>
-                <span>Exclusive offers</span>
-                <div style="padding-top: 15px;">
-                    <a href="" style="margin-bottom: 10px;">
-                        <img src="apple.webp" alt="apple" width="30" />
-                        <div style="padding-left: 8px;">
-                            <div style="font-size: 12px; opacity: 0.6; padding-top: 5px;">Download on the</div>
-                            <div style="margin-top: -5px; font-size: 18px; padding-bottom: 5px;">App Store</div>
-                        </div>
-                    </a>
-                    <a href="">
-                        <img src="google.webp" alt="google" width="30" />
-                        <div style="padding-left: 8px;">
-                            <div style="font-size: 12px; opacity: 0.6; padding-top: 5px;">Get it on</div>
-                            <div style="margin-top: -5px; font-size: 18px; padding-bottom: 5px;">Google Play</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="footer-info-connect">
-                <h4>Connect with Temu</h4>
-                <img src="fb.webp" alt="fb" width="26">
-                <img src="instagram.webp" alt="instagram" width="26">
-                <img src="twitter.webp" alt="twitter" width="26">
-                <img src="youtube.webp" alt="youtube" width="26">
-                <img src="pinterest.webp" alt="pinterest" width="26">
-                <img src="tiktok.webp" alt="tiktok" width="26">
-            </div>
-        </div>
-        <div class="footer-extra">
-            <div>
-                <h4>Security certification</h4>
-                <div>
-                    <img src="certification.webp" alt="certification" height="28" />
-                    <img src="certification2.webp" alt="certification" height="28" />
-                    <img src="certification3.webp" alt="certification" height="28" />
-                    <img src="certification.webp" alt="certification" height="28" />
-                    <img src="certification2.webp" alt="certification" height="28" />
-                    <img src="certification3.webp" alt="certification" height="28" />
-                    <img src="certification.webp" alt="certification" height="28" />
-                </div>
-            </div>
-            <div>
-                <h4>We accept</h4>
-                <div>
-                    <img src="accept.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                    <img src="accept3.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                    <img src="accept3.webp" alt="accept" height="28" />
-                    <img src="accept.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                    <img src="accept.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                    <img src="accept3.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                    <img src="accept3.webp" alt="accept" height="28" />
-                    <img src="accept.webp" alt="accept" height="28" />
-                    <img src="accept2.webp" alt="accept" height="28" />
-                </div>
-            </div>
-        </div>
-        <div class="footer-option">
-            <span>© 2024 WhaleCo Inc.</span>
-            <a href="">Terms of use</a>
-            <a href="">Privacy policy</a>
-            <div>
-                <a href="">Your privacy choices</a>
-                <img src="choice.webp" alt="choice" width="22" />
-            </div>
-            <a href="">Ad Choices</a>
-        </div>
-    </div>
-    <!-- <div id="footer"></div> -->
+    <!-- <iframe class="iframe" src="home_page.html" style=" margin-bottom: 30px;"    ></iframe> -->
+    <div id="footer"></div>
 </body>
 
 </html>

@@ -1,22 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="stylesheet" href="style.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./header.css">
+    <title>Document</title>
+    <script>
+        window.onload = function() {
+            if (window.localStorage.getItem("cart")) {
+                let data = JSON.parse(window.localStorage.getItem("cart"));
+                let itemAmounts = 0;
+                for (let item of data) {
+                    itemAmounts+= parseInt(item.qty_selected);
+                }
+                if (itemAmounts === 0) {
+                    $("#item-amounts").css("display", "none");
+                } else {
+                    $("#item-amounts").css("display", "");
+                    $("#item-amounts").text(itemAmounts);
+                }
+            } else {
+                $("#item-amounts").css("display", "none");
+            }
+        }
+
+        function openCart() {
+            window.location.href = '/cart';
+        }
+    </script>
+</head>
+
 <body>
     <div class="header">
         <div class="header-container">
-            <img src="/uploads/temu-icon.png" alt="" width="70">
+            <a href="/"><img src="/temu-icon.png" alt="" width="70"></a>
             <div class="header-option">
-                <img src="like.svg" alt="like" />
+                <img src="/like.svg" alt="like" />
                 <span>Best Sellers
-                    <img src="hot-label.webp" alt="hot-label" width="30" height="14" style="position: absolute; margin-left: -20px; top: 13px;" />
+                    <img src="/hot-label.webp" alt="hot-label" width="30" height="14"
+                        style="position: absolute; margin-left: -20px; top: 13px;" />
                 </span>
             </div>
             <div class="header-option">
-                <img src="star.svg" alt="star">
+                <img src="/star.svg" alt="star">
                 <span>5-Star Rated</span>
             </div>
             <div class="header-option">
-                <img src="sale.svg" alt="sale">
+                <img src="/sale.svg" alt="sale">
                 <span>Seasonal Sale</span>
             </div>
             <div class="header-option">
@@ -27,25 +59,29 @@
             </div>
             <div class="header-search">
                 <input type="text" placeholder="computer" />
-                <div class="header-search-icon"><img src="search.png" alt="search" width="15"></div>
+                <div class="header-search-icon"><img src="/search.png" alt="search" width="15"></div>
             </div>
             <div class="header-option">
-                <img src="avatar.webp" alt="avatar" width="23" height="23">
+                <img src="/avatar.webp" alt="avatar" width="23" height="23">
                 <span>Orders & Account</span>
             </div>
             <div class="header-option">
-                <img src="chat.svg" alt="chat" width="28">
+                <img src="/chat.svg" alt="chat" width="28">
                 <span>Support</span>
             </div>
             <div class="header-option">
-                <img src="flag.webp" alt="flag" width="23" height="23">
+                <img src="/flag.webp" alt="flag" width="23" height="23">
                 <span>EN</span>
             </div>
-            <div class="header-option">
-                <img src="cart.svg" alt="cart" width="23">
+            <div class="header-option" onclick="openCart()">
+                <div style="position: relative;">
+                    <img src="/cart.svg" alt="cart" width="23">
+                    <div id="item-amounts" class="item-amounts"></div>
+                </div>
                 <span>Cart</span>
             </div>
         </div>
     </div>
 </body>
+
 </html>

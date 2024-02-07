@@ -82,7 +82,7 @@
             var parts = url.split('/');
             var id = parts[parts.length - 1];
             id = id == '' ? 1 : id
-            $.ajax("http://localhost/product/"+id, {
+            $.ajax("http://localhost/product/" + id, {
                 "type": "GET",
             }).done((data) => {
                 console.log(data);
@@ -92,7 +92,7 @@
                 console.error("Error:", error);
             });
 
-           
+
             function apiDataProcess(data) {
                 let deliveryDate = getDeliveryDate();
                 let estimatedDate = "Feb " + deliveryDate + "-" + (deliveryDate + 3)
@@ -164,13 +164,9 @@
             });
 
             $(".checkout").click(function () {
-                if (checkoutItem == 0) {
-                    alert("");
-                } else {
-                    //move to checkout page
-                }
+                window.location.href = '/cart';
             });
-          
+
 
             // function openDialog() {
             //     $('#dialog').dialog({
