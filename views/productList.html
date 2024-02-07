@@ -1,0 +1,156 @@
+<html>
+
+<head>
+
+    <style>
+        .productStyle {
+            width: 280px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .fontSmall {
+            color: gray;
+            font-size: small;
+        }
+
+        .fontMedium {
+            color: gray;
+            font-size: medium;
+        }
+
+        .fontLarge {
+            font-size: large;
+        }
+
+        .priceInfoStyle {
+            display: flex;
+            margin-top: 10px;
+            justify-content: space-between;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 280px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="/utility.js"></script>
+<script>
+    $(function () {
+        console.log('fs', window.location.href);
+        var url = window.location.href;
+        var parts = url.split('/');
+        var categoryId = parts[parts.length - 1];
+        let isCategory = false;
+        console.log('isCategory', categoryId);
+
+        if (categoryId !== "") {
+            console.log("The URL ends with an ID:", categoryId);
+            isCategory = true;
+        }
+
+        let apiData;
+        if (!isCategory) {
+            $.ajax("http://localhost/product/", {
+                "type": "GET",
+            }).done((data) => {
+                console.log("product");
+                apiData = data;
+                apiDataProcess();
+
+            }).fail((xhr, status, error) => {
+                console.error("Error:", error);
+            });
+        } else {
+            $.ajax("http://localhost/product/byCategoryId/" + categoryId, {
+                "type": "GET",
+            }).done((data) => {
+                console.log("category");
+                apiData = data;
+                apiDataProcess();
+
+            }).fail((xhr, status, error) => {
+                console.error("Error:", error);
+            });
+        }
+        let id = $('#productContainer');
+        let html = "";
+        let sizeDiv=' <div style="display:none;"><label>Size(US)</label><br><br>'+
+            '<button class="size" value="XS">XS</button>'+
+            '<button class="size" value="S">S</button>'+
+            '<button class="size" value="M">M</button>'+
+            '<button class="size" value="L">L</button><br></div>';
+        function apiDataProcess() {
+            apiData.forEach(item => {
+                let starHtml = ""
+                for (let i = 0; i < item.rate_count; i++) {
+                    starHtml = starHtml + "★";
+                }
+                let div = '<div class="product-item"  id=' + item.id + '><img   id=' + item.id + ' src=' + item.image + ' class="productStyle"/>' +
+                    '<div class="truncate">' + item.name + '</div>' +
+                    '<div class="priceInfoStyle">' +
+                    '<div style="display: flex; gap:5px;">' +
+                    '<labe class="fontLarge""><b>$' + item.dis_price + '</b></label>&nbsp' +
+                    '<label class="fontSmall"><strike>$' + item.price + '</strike></label>&nbsp' +
+                    '<label class="fontMedium">' + item.buy_count + "k+ sold" + '</label></div>' +
+                    '<div style="border: 1px solid black;' +
+                    'border-radius: 20px; padding: 3px; width: 30px; text-align: center;">' +
+                    '<img id=' + item.id + '  class="cart-icon" src="/add-to-cart.png" width="20px" height="20px" /></div>' +
+                    '</div><div style="margin-top: 5px;">' + starHtml + '(' + item.rate_num + ')</div>' +
+                    '</div>'
+                html = html + div;
+            });
+            id.append(html);
+            $('.productStyle').on('click', function () {
+                navigateToPage2($(this).attr("id"));
+            });
+            $('.cart-icon').on('click', function () {
+                // Retrieve the item id from data-id attribute
+                let itemId = $(this).attr("id");
+                let selectedItem = apiData.find(item => item.id == itemId);
+                console.log(selectedItem); 
+                //addToCart(selectedItem)
+            });
+        }
+        function navigateToPage2(id) {
+            window.location.href = "/productDesciption/" + id;
+        }
+        // function addToCart(item) {
+        //     let productObj = {}
+        //     let deliveryDate = getDeliveryDate();
+        //     let estimatedDate = "Feb " + deliveryDate + "-" + (deliveryDate + 3)
+        //     productObj = {
+        //         image: item.image,
+        //         name: item.name,
+        //         supplier_name: item.sup,
+        //         price: item.price,
+        //         dis_price: item.dis_price,
+        //         qty_product: 1,
+        //         product_id: item.id,
+        //         shipping_date: estimatedDate, // You may update this value later
+        //     };
+        //     var products = JSON.parse(localStorage.getItem('cart')) || [];
+        //     productObj.qty_selected = $("#size").val();
+        //     productObj.size = selectedSize;
+        //     products.push(productObj);
+        //     console.log("storage" + JSON.stringify(products))
+        //     localStorage.setItem('cart', JSON.stringify(products));
+        // }
+
+    });
+</script>
+
+<body>
+    <div>
+        <div id="productContainer"
+            style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+
+        </div>
+</body>
+
+</html>

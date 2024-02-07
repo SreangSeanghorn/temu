@@ -6,27 +6,35 @@
     <title>Document</title>
 </head>
 <header>
-    <style>
-         iframe {
-            border: 0;
-            width: 100vw;
-            /* height: calc(100vh - 100px);  */
-            /* Adjust the height based on header and footer height */
-            /* overflow-y: scroll; Enable vertical scrolling within the iframe */
-        }
-    </style>
+  
 </header>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <title>Temu</title>
+    <script>
+        $(document).ready(function () {
+            $.get('/header', (data) => {
+                $('#header').html(data);
+            });
+            $.get('/homePage', (data) => {
+                $('#home-page').html(data);
+            });
+            // $.get('/footer', (data) => {
+            //     $('#footer').html(data);
+            // });
+            $.ajax
+        });
+    </script>
     
 </head>
 
 <body>
-    <iframe class="iframe" src="header.html"  ></iframe> 
-    <iframe class="iframe" src="home_page.html" style=" margin-bottom: 30px;"    ></iframe>
+   
+    <div id="header"></div>
+    <div id="home-page"></div>
     <div class="footer">
         <div class="footer-info">
             <div>
@@ -133,6 +141,7 @@
             <a href="">Ad Choices</a>
         </div>
     </div>
+    <!-- <div id="footer"></div> -->
 </body>
 
 </html>

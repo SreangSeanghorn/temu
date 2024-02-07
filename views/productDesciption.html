@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
+    <script src="/utility.js"></script>
     <style>
         iframe {
             border: 0;
@@ -38,68 +38,234 @@
             display: inline-block;
             width: 50px;
             text-align: center;
-             margin-bottom: 20px;
-
+            margin-bottom: 20px;
+            background: transparent;
         }
-       
+
+        .cart {
+            background-color: orange;
+            border: 1px solid transparent;
+            border-radius: 25px;
+            width: 500px;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: medium;
+        }
+
+        .vertical-line {
+            height: 100vh;
+            margin: 0 auto;
+            border: none;
+            border-left: 1px solid gainsboro;
+        }
+
+        .checkout {
+            border-radius: 5px;
+            border: 1px solid transparent;
+            font-size: medium;
+            background-color: orange;
+            color: white;
+            padding: 10px;
+            width: 200px;
+            margin-top: 30px;
+        }
     </style>
+    <script>
+        $(function () {
+            console.log('fs', window.location.href);
+            let productObj = {}
+            let selectedSize = 0;
+            let checkoutItem = 0;
+            showExistingCheckout();
+            var url = window.location.href;
+            var parts = url.split('/');
+            var id = parts[parts.length - 1];
+            id = id == '' ? 1 : id
+            $.ajax("http://localhost/product/"+id, {
+                "type": "GET",
+            }).done((data) => {
+                console.log(data);
+                apiDataProcess(data);
+
+            }).fail((xhr, status, error) => {
+                console.error("Error:", error);
+            });
+
+           
+            function apiDataProcess(data) {
+                let deliveryDate = getDeliveryDate();
+                let estimatedDate = "Feb " + deliveryDate + "-" + (deliveryDate + 3)
+                $("#deliveryDate").html(estimatedDate + ", 76.6% are <11 days")
+
+                data.forEach(item => {
+                    let itemQty = item.qty
+                    if (itemQty < 11) {
+                        itemQty = 12;
+                    }
+                    let qty = itemQty - getItemStock();
+                    productObj = {
+                        image: item.image,
+                        name: item.name,
+                        supplier_name: item.sup,
+                        price: item.price,
+                        dis_price: item.dis_price,
+                        qty_product: qty,
+                        product_id: item.id,
+                        shipping_date: estimatedDate, // You may update this value later
+                    };
+                    let starHtml = ""
+                    for (let i = 0; i < item.rate_count; i++) {
+                        starHtml = starHtml + "★";
+                    }
+                    $("#proImg").attr("src", item.image);
+                    $("#proName").text(item.name);
+                    $("#soldCount").text(item.buy_count + "k+ sold");
+                    $("#rating").text(item.rate_count + " " + starHtml + '(' + item.rate_num + ')')
+                    $("#disPrice").html("<b>$" + item.dis_price + "</b>");
+                    $("#price").html("<strike>$" + item.price);
+                    var description = item.des.replace(/\n/g, "<br><br>");
+                    $("#productDescription").html("<br>" + description);
+                    $("#leftStock").html("Only " + qty + " left")
+                    let size = $("#size")
+                    let option = ""
+                    for (let i = 1; i <= qty; i++) {
+                        option = option + "<option>" + i + "</option>"
+                    }
+                    size.append(option);
+
+                });
+            }
+            $(".cart").click(function () {
+                if (selectedSize == '') {
+                    alert("Select size");
+                    openDialog();
+                } else {
+                    var products = JSON.parse(localStorage.getItem('cart')) || [];
+                    productObj.qty_selected = $("#size").val();
+                    productObj.size = selectedSize;
+                    products.push(productObj);
+                    console.log("storage" + JSON.stringify(products))
+                    localStorage.setItem('cart', JSON.stringify(products));
+                    showExistingCheckout();
+                }
+            });
+
+            $(".size").click(function () {
+                // Reset color of all buttons
+                $(".size").css("background-color", "");
+                $(".size").css("color", "black");
+                $(".size").css("border-color", "black");
+                // Set color of the clicked button
+                $(this).css("background-color", "orange");
+                $(this).css("color", "white");
+                $(this).css("border-color", "orange");
+                selectedSize = $(this).val();
+            });
+
+            $(".checkout").click(function () {
+                if (checkoutItem == 0) {
+                    alert("");
+                } else {
+                    //move to checkout page
+                }
+            });
+          
+
+            // function openDialog() {
+            //     $('#dialog').dialog({
+            //         autoOpen: false,
+            //         width: 250,
+            //         height: 180,
+            //         modal: true,
+            //         buttons: {
+            //             "Close": function () {
+            //                 $(this).dialog("close");
+            //             }
+            //         }
+            //     });
+            //     $('#dialog').dialog('open');
+            // }
+
+
+
+        })
+
+    </script>
 </head>
 
 <body>
-    <iframe class="iframe" src="header.html" ></iframe> 
-    <div style="display: flex; gap: 20px;">
-        <img src="img3.jpeg" height="600px" width="700px" />
+    <!-- <iframe class="iframe" src="header.html"></iframe> -->
+    <div style="display: flex; gap: 20px; margin-left: 20px; justify-content: center;">
+        <div>
+            <img id="proImg" src="" height="600px" width="500px" style="margin-bottom: 20px;" /><br />
+            <label style="font-size: large;"><b>Description</b></label>
+            <div id="productDescription">
+
+            </div>
+        </div>
         <div style="margin-left: 50px;">
-            <label style="margin-bottom: 20px; ">Plus size boho top,Women</label><br>
-            <label style="color: rgb(220, 220, 220); ">11k+ sold</label> 4.7 ★★★★★<br><br>
+            <label id="proName" style="margin-bottom: 20px; width: 500px; "></label><br>
+            <div style="display: flex;justify-content: space-between;  margin-top: 10px;"><label id="soldCount"
+                    style="color: rgb(220, 220, 220); ">11k+ sold</label> <label id="rating"></label>
+            </div><br>
             <label class="bestSeller"># 3 Best Seller</label> <label style="margin: 2px;">this provider</label> <br><br>
-            <label style="font-size: large; "><b>$10.48</b></label>
+            <label id="disPrice" style="font-size: large; "><b>$10.48</b></label>
+            <label id="price"
+                style="font-size: small; color: gray; margin-left: 5px;"><strike>$10.48</strike></label><br><br>
             <label>Size(US)</label><br><br>
-            <label class="size">XS</label>
-            <label class="size">S</label>
-            <label class="size">M</label>
-            <label class="size">L</label><br>
+            <button class="size" value="XS">XS</button>
+            <button class="size" value="S">S</button>
+            <button class="size" value="M">M</button>
+            <button class="size" value="L">L</button><br>
             <div style="display: flex; align-items: center;">
                 <label>QTY</label>
-                <select name="qty"
+                <select name="qty" id="size"
                     style="border: 1px solid gainsboro;border-radius: 5px;width: 80px; padding: 5px; margin-left: 10px;">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
                 </select>
-                
-                <img src="sand_watch.png" width="25px" height="25px" style="margin-left: 20px;"  />
-                <label style="margin-left: 5px; color: orange;">Only 12 left</label>
+
+                <img src="/sand_watch.png" width="25px" height="25px" style="margin-left: 20px;" />
+                <label id="leftStock" style="margin-left: 5px; color: orange;">Only 12 left</label>
             </div>
-            <button style="background-color: orange; border: 1px solid transparent; border-radius: 25px; width: 500px; color: white; padding: 15px; margin-top: 20px; font-size: medium;"><b>Add to cart</b></button><br>
-            <div style="display: flex; align-items: center; margin-top: 20px; "><img src="info_ic.png" width="25px" /><label style="color: gray;">Provided by Basicfit.Ships from temu</label></div><br>
+            <button class="cart"><b>Add to cart</b></button><br>
+            <div style="display: flex; align-items: center; margin-top: 20px; "><img src="/info_ic.png"
+                    width="25px" /><label style="color: gray;">Provided by Basicfit.Ships from temu</label></div><br>
             <div style="display: flex; align-items: center;">
-                <img src="delivery_truck.png" width="25px" /><label style="margin-right: 5px; margin-left: 5px;"><b>Shipping</b></label>
-                <img src="arrow.png" width="15px" height="15px" style="margin-top: 2px;"/>
+                <img src="/delivery_truck.png" width="25px" /><label
+                    style="margin-right: 5px; margin-left: 5px;"><b>Shipping</b></label>
+                <img src="/arrow.png" width="15px" height="15px" style="margin-top: 2px;" />
             </div>
-            <div style="background-color: rgba(220, 220, 220, 0.832);  padding: 10px; margin-top: 5px; border-radius: 5px; width: 300px;">
-                <label style="color: green; margin-bottom: 20px; margin-left: 5px;">Standard: Free on all orders</label><br>
-                <label style="color: grey; margin-bottom: 20px; margin-left: 5px;">Delivery:</label>
-                <label style="margin-bottom: 20px; margin-left: 2px;">Feb 12-20,76.6% are <11days </label> <br>
-                <label style="color: grey; margin-bottom: 20px; margin-left: 5px;">Get a $5.00 credit for late delivery</label></br>
-                <label style="color: grey; margin-bottom: 20px; margin-left: 5px;">Courier company: USPS, UPS etc.</label>
+            <div
+                style="background-color: rgba(220, 220, 220, 0.832); padding: 10px; margin-top: 10px; border-radius: 5px; width: 300px;">
+                <div style="margin-bottom: 10px; margin-top: 10px;">
+                    <label style="color: green; margin-left: 5px;">Standard: Free on all orders</label>
+                </div>
+                <div style="margin-bottom: 10px; ">
+                    <label style="margin-left: 5px;">Delivery:</label>
+                    <label id="deliveryDate" style="margin-left: 2px;"></label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="color: grey; margin-left: 5px;">Get a $5.00 credit for late delivery</label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="color: grey; margin-left: 5px;">Courier company: USPS, UPS, etc.</label>
+                </div>
             </div>
             <div style="margin-top: 20px; display: flex; align-items: center;">
-                <img src="product_return.png" width="25px" style="margin-right: 5px;" />
+                <img src="/product_return.png" width="25px" style="margin-right: 5px;" />
                 <label><b>Free returns | Price adjustment</b></label>
-                <img src="arrow.png" width="15px" height="15px" style="margin-top: 2px; margin-left: 10px;"/>
+                <img src="/arrow.png" width="15px" height="15px" style="margin-top: 2px; margin-left: 10px;" />
             </div>
             <div style="display: flex; margin-top: 10px;">
-                <img src="leaf.png" width="25px"/>
-                <a href="https://www.temu.com/tree-landing.html?_x_sessn_id=dz1a75i2va&refer_page_name=goods&refer_page_id=10032_1707143042499_iak5bje1ac&refer_page_sn=10032" style="color: rgba(0, 128, 0, 0.801);"<b>Sustainability at Temu (4M+ trees)</b></a>
+                <img src="/leaf.png" width="25px" />
+                <a href="https://www.temu.com/tree-landing.html?_x_sessn_id=dz1a75i2va&refer_page_name=goods&refer_page_id=10032_1707143042499_iak5bje1ac&refer_page_sn=10032"
+                    style="color: rgba(0, 128, 0, 0.801);" <b>Sustainability at Temu (4M+ trees)</b></a>
             </div>
             <hr style="border-color: rgba(220, 220, 220, 0.164); margin-top: 20px;">
             <div style="display: flex; align-items: center;margin-top: 20px;">
-                <img src="shield.png" width="25px" style="margin-right: 10px;"/>
+                <img src="/shield.png" width="25px" style="margin-right: 10px;" />
                 <label><b>Shopping security</b></label>
-               
+
             </div>
             <div style="display: flex;">
                 <ul>
@@ -107,7 +273,7 @@
                     <li style="margin-top: 10px;">Secure privacy</li>
                 </ul>
                 <ul>
-                    <li >Secure logistics</li>
+                    <li>Secure logistics</li>
                     <li style="margin-top: 10px;">Purchase protection</li>
                 </ul>
             </div>
@@ -115,7 +281,32 @@
 
         </div>
 
+        <div style="display: flex; gap: 10px;">
+            <hr class="vertical-line">
+            <div>
+                <div
+                    style="border: 1px solid purple; height: 30px; width: 150px; display: flex;align-items: center;justify-content: center;gap: 5px;
+            background-color: purple; border-radius: 20px; padding: 5px; color: white; text-align: center; margin-left: 20px; margin-top: 20px;">
+                    <img src="/cart.svg" style="width: 25px; height: 25px;" />Subtotal
+                </div>
+                <div id="subTotal" style="display: none; text-align: center; margin-top: 20px; font-size: larger;">
+                    <b>10.24 $</b>
+                </div>
+                <div
+                    style="display: flex; align-items: center; background-color: rgba(255, 166, 0, 0.41);
+                width: 150px;  margin-left: 20px; font-size: small; gap: 10px; padding: 5px; border-radius: 5px; border: 1px solid transparent; justify-content: center; margin-top: 20px;">
+                    <img src="/check.png" style="width: 25px; height: 25px; " />
+                    <label>Free </br>shipping</br> on all </br>orders</label>
+                </div>
+                <button id="checkout" class="checkout"><b>Checkout</b></button>
+            </div>
+        </div>
+
+
     </div>
+    <!-- <div id="dialog" title="Dialog Title">
+        <p id="dialog-message">Your message goes here.</p>
+      </div> -->
 </body>
 
 </html>
