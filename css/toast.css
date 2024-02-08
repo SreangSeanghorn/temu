@@ -1,0 +1,14 @@
+.toast {
+    position: fixed;
+    bottom: 60px;
+    /* Adjust the distance from the bottom */
+    left: 50%;
+    /* Center horizontally */
+    transform: translateX(-50%);
+    /* Center horizontally */
+    background-color: #ffa500;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+}

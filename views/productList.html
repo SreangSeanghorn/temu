@@ -1,45 +1,10 @@
 <html>
 
-<head>
 
-    <style>
-        .productStyle {
-            width: 280px;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .fontSmall {
-            color: gray;
-            font-size: small;
-        }
-
-        .fontMedium {
-            color: gray;
-            font-size: medium;
-        }
-
-        .fontLarge {
-            font-size: large;
-        }
-
-        .priceInfoStyle {
-            display: flex;
-            margin-top: 10px;
-            justify-content: space-between;
-        }
-
-        .truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 280px;
-            margin-top: 10px;
-        }
-    </style>
-</head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="/utility.js"></script>
+<link rel="stylesheet" href="/productList.css">
+<link rel="stylesheet" href="/toast.css">
 <script>
     $(function () {
         console.log('fs', window.location.href);
@@ -80,15 +45,11 @@
         }
         let id = $('#productContainer');
         let html = "";
-        let sizeDiv=' <div style="display:none;"><label>Size(US)</label><br><br>'+
-            '<button class="size" value="XS">XS</button>'+
-            '<button class="size" value="S">S</button>'+
-            '<button class="size" value="M">M</button>'+
-            '<button class="size" value="L">L</button><br></div>';
+        let selectedSize = ''
         function apiDataProcess() {
             apiData.forEach(item => {
                 let starHtml = ""
-                for (let i = 0; i < item.rate_count; i++) {
+                for (let i = 0; i < Math.floor(item.rate_count); i++) {
                     starHtml = starHtml + "★";
                 }
                 let div = '<div class="product-item"  id=' + item.id + '><img   id=' + item.id + ' src=' + item.image + ' class="productStyle"/>' +
@@ -100,8 +61,14 @@
                     '<label class="fontMedium">' + item.buy_count + "k+ sold" + '</label></div>' +
                     '<div style="border: 1px solid black;' +
                     'border-radius: 20px; padding: 3px; width: 30px; text-align: center;">' +
-                    '<img id=' + item.id + '  class="cart-icon" src="/add-to-cart.png" width="20px" height="20px" /></div>' +
-                    '</div><div style="margin-top: 5px;">' + starHtml + '(' + item.rate_num + ')</div>' +
+                    '<img id=' + item.id + ' class="cart-icon" src="/add-to-cart.png" width="20px" height="20px"/></div>' +
+                    '</div>' +
+                    ' <div style="display:;"><label>Select Size(US)</label><br><br>' +
+                    '<button class="size" value="XS">XS</button>&nbsp;' +
+                    '<button class="size" value="S">S</button>&nbsp;' +
+                    '<button class="size" value="M">M</button>&nbsp;' +
+                    '<button class="size" value="L">L</button></div>' +
+                    '<div style="margin-top: 5px;">' + starHtml + '(' + item.rate_num + ')</div>' +
                     '</div>'
                 html = html + div;
             });
@@ -110,47 +77,84 @@
                 navigateToPage2($(this).attr("id"));
             });
             $('.cart-icon').on('click', function () {
+                console.log("icon clikc")
                 // Retrieve the item id from data-id attribute
                 let itemId = $(this).attr("id");
                 let selectedItem = apiData.find(item => item.id == itemId);
-                console.log(selectedItem); 
-                //addToCart(selectedItem)
+
+                if (selectedSize == '') {
+                    showToast("Select size","#ff0000")
+                } else {
+                    addToCart(selectedItem)
+                }
+            });
+            $(".size").click(function () {
+                // Reset color of all buttons
+                $(".size").css("background-color", "");
+                $(".size").css("color", "black");
+                $(".size").css("border-color", "black");
+                // Set color of the clicked button
+                $(this).css("background-color", "orange");
+                $(this).css("color", "white");
+                $(this).css("border-color", "orange");
+                selectedSize = $(this).val();
             });
         }
         function navigateToPage2(id) {
             window.location.href = "/productDesciption/" + id;
         }
-        // function addToCart(item) {
-        //     let productObj = {}
-        //     let deliveryDate = getDeliveryDate();
-        //     let estimatedDate = "Feb " + deliveryDate + "-" + (deliveryDate + 3)
-        //     productObj = {
-        //         image: item.image,
-        //         name: item.name,
-        //         supplier_name: item.sup,
-        //         price: item.price,
-        //         dis_price: item.dis_price,
-        //         qty_product: 1,
-        //         product_id: item.id,
-        //         shipping_date: estimatedDate, // You may update this value later
-        //     };
-        //     var products = JSON.parse(localStorage.getItem('cart')) || [];
-        //     productObj.qty_selected = $("#size").val();
-        //     productObj.size = selectedSize;
-        //     products.push(productObj);
-        //     console.log("storage" + JSON.stringify(products))
-        //     localStorage.setItem('cart', JSON.stringify(products));
-        // }
+        function addToCart(item) {
+            var products = JSON.parse(localStorage.getItem('cart')) || [];
+            let productRepeat = false;
+            if (products.length > 0) {
+                for (let obj of products) {
+                    console.log(obj.product_id + "," + item.id + "obj size" + obj.size + "item size" + selectedSize)
+                    if (obj.product_id == item.id & obj.size == selectedSize) {
+                        productRepeat = true;
+                        obj.qty_selected = (1 + parseInt(obj.qty_selected));
+                        break;
+                    }
+                }
+            }
+            console.log(productRepeat)
+            if (!productRepeat) {
+                let productObj = {}
+                let deliveryDate = getDeliveryDate();
+                let estimatedDate = "Feb " + deliveryDate + "-" + (deliveryDate + 3)
+                productObj = {
+                    image: item.image,
+                    name: item.name,
+                    supplier_name: item.sup,
+                    price: item.price,
+                    dis_price: item.dis_price,
+                    qty_product: 1,
+                    product_id: item.id,
+                    qty_selected: 1,
+                    size: selectedSize,
+                    shipping_date: estimatedDate,
+                };
+                products.push(productObj);
+            }
+            $(".size").css("background-color", "");
+            $(".size").css("color", "black");
+            $(".size").css("border-color", "black");
+            selectedSize = '';
+            console.log("storage" + JSON.stringify(products))
+            localStorage.setItem('cart', JSON.stringify(products));
+            showExistingCheckout();
+            showToast("Item added succesfully","#ffa500")
+        }
 
     });
+   
 </script>
 
 <body>
-    <div>
-        <div id="productContainer"
-            style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+    <div id="productContainer"
+        style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr ; gap: 30px; margin-bottom: 30px;">
 
-        </div>
+    </div>
+    <div class="toast" id="toastMessage"></div>
 </body>
 
 </html>

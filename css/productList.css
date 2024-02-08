@@ -1,0 +1,46 @@
+.productStyle {
+    width: 280px;
+    height: 180px;
+    object-fit: cover;
+}
+
+.fontSmall {
+    color: gray;
+    font-size: small;
+}
+
+.fontMedium {
+    color: gray;
+    font-size: medium;
+}
+
+.fontLarge {
+    font-size: large;
+}
+
+.priceInfoStyle {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+    width: 280px
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 280px;
+    margin-top: 10px;
+}
+
+.size {
+    border: 1px solid gray;
+    border-radius: 20px;
+    padding: 5px;
+    width: 30px;
+    display: inline-block;
+    width: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+    background: transparent;
+}
