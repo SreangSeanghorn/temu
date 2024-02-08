@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-         .checkout {
+        .checkout {
             border-radius: 5px;
             border: 1px solid transparent;
             font-size: medium;
@@ -14,44 +15,51 @@
             padding: 10px;
             width: 200px;
             margin-top: 30px;
-            
-         
+            margin-right: 20px;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="/utility.js"></script>
     <script>
-         $.get('/productList', (data) => {
+
+        $(function () {
+            $.get('/productList', (data) => {
                 $('#product-list').html(data);
-            });
-            $(function(){
+            }).done(function () {
+                // Code to be executed after updating the HTML content
+                // For example:
                 showExistingCheckout();
-            })
+            });
+
+        })
+
     </script>
 </head>
+
 <body>
     <div style="display: flex;">
-    <div id="product-list" style=" margin-left: 50px;margin-top: 30px; margin-right: 50px;"></div>
-    <div style="display: flex; gap: 10px; ">
-        <hr class="vertical-line"/>
-        <div>
-            <div
-                style="border: 1px solid purple; height: 30px; width: 150px; display: flex;align-items: center;justify-content: center;gap: 5px;
+        <div id="product-list" style=" margin-left: 20px;margin-top: 30px; margin-right: 20px;"></div>
+        <div style="display: flex; gap: 10px; ">
+            <hr class="vertical-line" />
+            <div style="margin-right: 20px;box-sizing: border-box;">
+                <div
+                    style="border: 1px solid purple; height: 30px; width: 150px; display: flex;align-items: center;justify-content: center;gap: 5px;
         background-color: purple; border-radius: 20px; padding: 5px; color: white; text-align: center; margin-left: 20px; margin-top: 20px;">
-                <img src="/cart.svg" style="width: 25px; height: 25px;" />Subtotal
-            </div>
-            <div id="subTotal" style="display: none; text-align: center; margin-top: 20px; font-size: larger;">
-                <b>10.24 $</b>
-            </div>
-            <div
-                style="display: flex; align-items: center; background-color: rgba(255, 166, 0, 0.41);
+                    <img src="/cart.svg" style="width: 25px; height: 25px;" />Subtotal
+                </div>
+                <div id="subTotal" style="display: none; text-align: center; margin-top: 20px; font-size: larger;">
+                    <b>10.24 $</b>
+                </div>
+                <div
+                    style="display: flex; align-items: center; background-color: rgba(255, 166, 0, 0.41);
             width: 150px;  margin-left: 20px; font-size: small; gap: 10px; padding: 5px; border-radius: 5px; border: 1px solid transparent; justify-content: center; margin-top: 20px;">
-                <img src="/check.png" style="width: 25px; height: 25px; " />
-                <label>Free </br>shipping</br> on all </br>orders</label>
+                    <img src="/check.png" style="width: 25px; height: 25px; " />
+                    <label>Free </br>shipping</br> on all </br>orders</label>
+                </div>
+                <button id="checkout" class="checkout"><b>Checkout</b></button>
             </div>
-            <button id="checkout" class="checkout"><b>Checkout</b></button>
         </div>
     </div>
-</div>
 </body>
+
 </html>

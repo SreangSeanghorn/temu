@@ -7,73 +7,11 @@
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="/utility.js"></script>
-    <style>
-        iframe {
-            border: 0;
-            width: 2500px;
-            height: 100px;
-            /* Adjust the height based on header and footer height */
-            /* overflow-y: scroll; Enable vertical scrolling within the iframe */
-        }
+    <link rel="stylesheet" href="/toast.css">
+    <link rel="stylesheet" href="/productDesc.css">
 
-        .bestSeller {
-            border: 1px solid transparent;
-            background-color: rgba(255, 166, 0, 0.517);
-            padding: 5px;
-            border-bottom-right-radius: 10px;
-            border-top-left-radius: 10px;
-        }
-
-        .imgStyle {
-            border-radius: 50px;
-            width: 100px;
-            height: 100px;
-        }
-
-        .size {
-            border: 1px solid gray;
-            border-radius: 20px;
-            padding: 5px;
-            width: 30px;
-            display: inline-block;
-            width: 50px;
-            text-align: center;
-            margin-bottom: 20px;
-            background: transparent;
-        }
-
-        .cart {
-            background-color: orange;
-            border: 1px solid transparent;
-            border-radius: 25px;
-            width: 500px;
-            color: white;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: medium;
-        }
-
-        .vertical-line {
-            height: 100vh;
-            margin: 0 auto;
-            border: none;
-            border-left: 1px solid gainsboro;
-        }
-
-        .checkout {
-            border-radius: 5px;
-            border: 1px solid transparent;
-            font-size: medium;
-            background-color: orange;
-            color: white;
-            padding: 10px;
-            width: 200px;
-            margin-top: 30px;
-        }
-    </style>
     <script>
         $(function () {
-            console.log('fs', window.location.href);
             let productObj = {}
             let selectedSize = 0;
             let checkoutItem = 0;
@@ -112,14 +50,14 @@
                         dis_price: item.dis_price,
                         qty_product: qty,
                         product_id: item.id,
-                        shipping_date: estimatedDate, // You may update this value later
+                        shipping_date: estimatedDate, 
                     };
                     let starHtml = ""
                     for (let i = 0; i < item.rate_count; i++) {
                         starHtml = starHtml + "★";
                     }
                     $("#proImg").attr("src", item.image);
-                    $("#proName").text(item.name);
+                    $("#proName").html("<b>"+item.name+"</b>");
                     $("#soldCount").text(item.buy_count + "k+ sold");
                     $("#rating").text(item.rate_count + " " + starHtml + '(' + item.rate_num + ')')
                     $("#disPrice").html("<b>$" + item.dis_price + "</b>");
@@ -138,16 +76,29 @@
             }
             $(".cart").click(function () {
                 if (selectedSize == '') {
-                    alert("Select size");
-                    openDialog();
+                    showToast("Select size", "#ff0000")
                 } else {
                     var products = JSON.parse(localStorage.getItem('cart')) || [];
                     productObj.qty_selected = $("#size").val();
                     productObj.size = selectedSize;
-                    products.push(productObj);
+                    let productRepeat = false;
+                    if (products.length > 0) {
+                        for (let obj of products) {
+                            if (obj.product_id == productObj.product_id & obj.size == productObj.size) {
+                                productRepeat = true;
+                                obj.qty_selected = (parseInt(productObj.qty_selected) + parseInt(obj.qty_selected));
+                                break;
+                            }
+                        }
+                    }
+                    console.log(productRepeat)
+                    if (!productRepeat) {
+                        products.push(productObj);
+                    }
                     console.log("storage" + JSON.stringify(products))
                     localStorage.setItem('cart', JSON.stringify(products));
                     showExistingCheckout();
+                    showToast("Item added succesfully", "#ffa500")
                 }
             });
 
@@ -167,31 +118,12 @@
                 window.location.href = '/cart';
             });
 
-
-            // function openDialog() {
-            //     $('#dialog').dialog({
-            //         autoOpen: false,
-            //         width: 250,
-            //         height: 180,
-            //         modal: true,
-            //         buttons: {
-            //             "Close": function () {
-            //                 $(this).dialog("close");
-            //             }
-            //         }
-            //     });
-            //     $('#dialog').dialog('open');
-            // }
-
-
-
         })
 
     </script>
 </head>
 
 <body>
-    <!-- <iframe class="iframe" src="header.html"></iframe> -->
     <div style="display: flex; gap: 20px; margin-left: 20px; justify-content: center;">
         <div>
             <img id="proImg" src="" height="600px" width="500px" style="margin-bottom: 20px;" /><br />
@@ -300,9 +232,7 @@
 
 
     </div>
-    <!-- <div id="dialog" title="Dialog Title">
-        <p id="dialog-message">Your message goes here.</p>
-      </div> -->
+    <div class="toast" id="toastMessage"></div>
 </body>
 
 </html>

@@ -109,7 +109,16 @@
                 });
             }
             function navigateToPage2(id) {
-                //window.location.href = "/productList/" + id;
+                let storageId=[1,2,3,4,5,12,8]
+                let notFound=false;
+                for(let obj of storageId){
+                    if(obj==id){
+                        notFound=true;
+                    }
+                }
+                if(!notFound){
+                    id=1;
+                }
                 window.location.href = "/categoryList/"+ id ;
             }
         });
@@ -120,7 +129,7 @@
 <body style="margin-left: 40px; ">
     <h2 style="text-align: center;">Categories</h2>
     <div id="categoryContainer"
-        style="display: grid;  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; margin-top: 20px; gap: 10px; margin-left: 50px;">
+        style="display: grid;  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr ; margin-top: 20px; gap: 10px; margin-left: 50px;">
 
     </div>
 
@@ -173,7 +182,7 @@
     </div>
 
 
-    <div id="product-list" style=" margin-left: 50px;margin-top: 30px; margin-right: 50px;"></div>
+    <div id="product-list"  style=" margin-left: 50px;margin-top: 30px; margin-right: 50px; overflow: auto; "></div>
 </body>
 
 </html>

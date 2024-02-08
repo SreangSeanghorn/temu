@@ -17,13 +17,22 @@ function showExistingCheckout() {
     let price = 0;
     if (products != null) {
         for (let obj of products) {
-            price = price + obj.dis_price;
+            price = price +( obj.dis_price * parseInt(obj.qty_selected));
         }
         if (price > 0) {
             checkoutItem = products.length;
             $("#subTotal").css('display', "");
-            $("#subTotal").html("<b>$" + price + "</b>")
+            $("#subTotal").html("<b>$" + price.toFixed(2) + "</b>")
             $("#checkout").html("<b>Checkout (" + products.length + ")</b>")
         }
     }
+}
+function showToast(message,bgColor) {
+    var toast = document.getElementById("toastMessage");
+    toast.textContent = message; // Set the message content
+    toast.style.display = "block";
+    toast.style.backgroundColor = bgColor; 
+    setTimeout(function () {
+        toast.style.display = "none";
+    }, 3000);
 }

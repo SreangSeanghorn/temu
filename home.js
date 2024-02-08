@@ -10,6 +10,7 @@ app.engine('html', ejs.renderFile)
 app.use(express.static(path.join(__dirname, 'views'))); // Assuming your JS files are in the "js" folder
 app.use(express.static(path.join(__dirname, 'uploads'))); 
 app.use(express.static(path.join(__dirname, 'js'))); 
+app.use(express.static(path.join(__dirname, 'css'))); 
 
 app.listen(80, () => {
   console.log("server is running")
@@ -63,32 +64,7 @@ let shippingInfo = {
     paymentMethod: 'master'
 };
 
-// let cart = [
-//     {
-//         "image": "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/8c651ea22775bcab0b67882cf5de57af.jpg?imageView2/2/w/800/q/70/format/webp",
-//         "name": "Men's Contrast Color Hoodies Fashion Casual Hooded Sweatshirt For Fall Winter, Men's Clothing",
-//         "supplier_name": "YSL",
-//         "price": 49.89,
-//         "dis_price": 19.99,
-//         "qty_product": 10,
-//         "product_id": 1,
-//         "shipping_date": "",
-//         "qty_selected": "2",
-//         "size": "XS"
-//     },
-//     {
-//         "image": "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/8c651ea22775bcab0b67882cf5de57af.jpg?imageView2/2/w/800/q/70/format/webp",
-//         "name": "Men's Contrast Color Hoodies Fashion Casual Hooded Sweatshirt For Fall Winter, Men's Clothing",
-//         "supplier_name": "YSL",
-//         "price": 49.89,
-//         "dis_price": 19.99,
-//         "qty_product": 10,
-//         "product_id": 2,
-//         "shipping_date": "",
-//         "qty_selected": "1",
-//         "size": "S"
-//     }
-// ]
+
 
 app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, '/views/index.html'))
