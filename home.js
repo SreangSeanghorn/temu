@@ -120,6 +120,8 @@ app.delete('/removeAllItems', (req, res, next) => {
 })
 
 app.put('/updateShippingInfo', (req, res, next) => {
-    shippingInfo = { ...req.body };
+    if (Object.keys(req.body).length > 0) {
+      shippingInfo = req.body;
+    }
     res.send('success');
 })
