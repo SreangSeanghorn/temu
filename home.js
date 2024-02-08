@@ -86,6 +86,7 @@ app.get('/cart', (req, res, next) => {
 })
 
 app.get('/getCartInfo', (req, res, next) => {
+  console.log(shippingInfo);
     res.render('cart-info', {
         cart: cart,
         summary: summary,

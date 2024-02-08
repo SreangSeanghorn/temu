@@ -22,7 +22,8 @@
     <script src="/utility.js"></script>
     <link rel="stylesheet" href="/style.css">
     <script>
-        $(document).ready(function () {
+        $(function(){
+            $(document).ready(function () {
             $.get('/header', (data) => {
                 $('#header').html(data);
             });
@@ -33,7 +34,11 @@
             }).done(function () {
                 showExistingCheckout();
             });
-
+            $(".checkout").click(function () {
+                window.location.href = '/cart';
+            });
+        })
+       
         
 
     </script>
