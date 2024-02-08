@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="./cart.css">
+    <link rel="stylesheet" href="/cart.css">
     <title>Temu | Shopping Cart</title>
     <script>
         $.get("/cart",
@@ -46,8 +46,13 @@
 
             $(".checkout-btn").click(function () {
                 updateShippingInfo();
-                $("#content").html('<div style="font-size: 18px; text-align: center; color: #0A8800; padding: 100px 0 15px;">Order successfully. Your order will be delivered soon.</div>' +
-                    '<div style="text-align: center;"><button style="background-color: #FB7701; color: white; font-weight: 600; text-align: center; padding: 13px; font-size: 16px; cursor: pointer; border: none; border-radius: 20px;" onclick="backHome()">Return to Home page</button></div>');
+                $("#content").html(
+                    '<div style="font-size: 16px; text-align: center; color: #777; padding: 150px 0;">'
+                    + '<img src="/orange-check.png" alt="shopping-cart" width="200" height="200" />'
+                    + ' <div style="font-size: 20px; font-weight: 600; margin: 20px 0 10px; color: black;">Ordered successfully</div>'
+                    + '<div>Thank you for ordering!!!</div>'
+                    + '</div>'
+                );
                 $.ajax("/removeAllItems", { type: "DELETE" });
                 window.localStorage.removeItem("cart");
             });
@@ -61,12 +66,13 @@
             window.location.href = "/";
         }
 
-        function changeCart(fieldName, value, productId) {
+        function changeCart(fieldName, value, product_id, size) {
             $.ajax("/updateCart",
                 {
                     type: "PUT",
                     data: {
-                        product_id: productId,
+                        product_id: product_id,
+                        size: size,
                         [fieldName]: value
                     }
                 }
@@ -78,12 +84,13 @@
             });
         }
 
-        function removeItem(element, productId) {
+        function removeItem(element, product_id, size) {
             $.ajax("/removeItem",
                 {
                     type: "DELETE",
                     data: {
-                        product_id: productId,
+                        product_id: product_id,
+                        size: size
                     }
                 }
             ).done(function (data) {
@@ -100,7 +107,6 @@
         }
 
         function updateShippingInfo() {
-            // console.log($("[name='country']:selected").val());
             $.ajax("/updateShippingInfo",
                 {
                     type: "PUT",
@@ -110,7 +116,7 @@
                         address: $("[name='address']").val(),
                         zipCode: $("[name='zipCode']").val(),
                         phoneNumber: $("[name='phoneNumber']").val(),
-                        paymentMethod: $("[name='paymentMethod']:checked").val()
+                        paymentMethod: $("[name='paymentMethod']").find(":checked").val()
                     }
                 }
             );

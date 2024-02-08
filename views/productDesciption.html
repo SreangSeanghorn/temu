@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="/style.css" />
     <script src="/utility.js"></script>
     <style>
         iframe {
@@ -72,6 +73,11 @@
         }
     </style>
     <script>
+        $(document).ready(function () {
+            $.get('/header', (data) => {
+                $('#header').html(data);
+            });
+        });
         $(function () {
             console.log('fs', window.location.href);
             let productObj = {}
@@ -148,6 +154,7 @@
                     console.log("storage" + JSON.stringify(products))
                     localStorage.setItem('cart', JSON.stringify(products));
                     showExistingCheckout();
+                    showCartAmounts()
                 }
             });
 
@@ -192,7 +199,8 @@
 
 <body>
     <!-- <iframe class="iframe" src="header.html"></iframe> -->
-    <div style="display: flex; gap: 20px; margin-left: 20px; justify-content: center;">
+    <div id="header"></div>
+    <div style="display: flex; gap: 20px; margin: 30px 0 0 20px; justify-content: center;">
         <div>
             <img id="proImg" src="" height="600px" width="500px" style="margin-bottom: 20px;" /><br />
             <label style="font-size: large;"><b>Description</b></label>

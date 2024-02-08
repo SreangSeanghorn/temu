@@ -5,25 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="./header.css">
+    <script src="/utility.js"></script>
+    <link rel="stylesheet" href="/header.css">
     <title>Document</title>
     <script>
         window.onload = function() {
-            if (window.localStorage.getItem("cart")) {
-                let data = JSON.parse(window.localStorage.getItem("cart"));
-                let itemAmounts = 0;
-                for (let item of data) {
-                    itemAmounts+= parseInt(item.qty_selected);
-                }
-                if (itemAmounts === 0) {
-                    $("#item-amounts").css("display", "none");
-                } else {
-                    $("#item-amounts").css("display", "");
-                    $("#item-amounts").text(itemAmounts);
-                }
-            } else {
-                $("#item-amounts").css("display", "none");
-            }
+            showCartAmounts();
         }
 
         function openCart() {

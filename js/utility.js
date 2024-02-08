@@ -27,3 +27,22 @@ function showExistingCheckout() {
         }
     }
 }
+
+function showCartAmounts() {
+    if (window.localStorage.getItem("cart")) {
+        let data = JSON.parse(window.localStorage.getItem("cart"));
+        let itemAmounts = 0;
+        for (let item of data) {
+            console.log(parseInt(item.qty_selected));
+            itemAmounts+= parseInt(item.qty_selected);
+        }
+        if (itemAmounts === 0) {
+            $("#item-amounts").css("display", "none");
+        } else {
+            $("#item-amounts").css("display", "block");
+            $("#item-amounts").text(itemAmounts);
+        }
+    } else {
+        $("#item-amounts").css("display", "none");
+    }
+}
